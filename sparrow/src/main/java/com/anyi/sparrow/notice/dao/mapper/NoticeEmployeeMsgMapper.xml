@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.sparrow.notice.dao.mapper.NoticeEmployeeMsgMapper">
+    <resultMap id="UnReadMsgDTOMap" type="com.anyi.sparrow.notice.dto.UnReadMsgDTO">
+        <result column="id" jdbcType="BIGINT" property="msgId"/>
+        <result column="title" jdbcType="VARCHAR" property="msg"/>
+        <result column="biz_type" jdbcType="VARCHAR" property="bizType"/>
+        <result column="biz_id" jdbcType="BIGINT" property="bizId"/>
+    </resultMap>
+
+
+    <select id="findLastUnReadMsg" resultMap="UnReadMsgDTOMap">
+        select *
+        from notice_employee_msg
+        where employee_id = #{employeeId,jdbcType=BIGINT}
+          AND biz_type = #{bizType,jdbcType=VARCHAR}
+          AND has_read = 0
+        order by id DESC limit 1
+    </select>
+</mapper>

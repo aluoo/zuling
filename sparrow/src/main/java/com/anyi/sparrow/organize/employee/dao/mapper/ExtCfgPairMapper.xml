@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.sparrow.organize.employee.dao.mapper.ExtCfgPairMapper">
+
+  <select id="getMax" resultType="java.lang.String">
+    SELECT max(pair_no) FROM cfg_pair where biz = #{biz}
+  </select>
+  <select id="getByIdAndBiz" resultType="com.anyi.sparrow.organize.employee.vo.EmpCfgVo">
+    SELECT
+           e.name,
+           e.no,
+           e.biz,
+           p.pair_no
+    FROM emp_cfg e LEFT JOIN cfg_pair p ON e.no = p.no AND e.biz = p.biz
+    where e.biz = #{biz} AND e.emp_id = #{empId}
+  </select>
+</mapper>

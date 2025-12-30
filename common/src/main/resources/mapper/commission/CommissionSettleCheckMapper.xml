@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.commission.mapper.CommissionSettleCheckMapper">
+
+
+
+    <select id="selectByParam" resultType="com.anyi.common.commission.response.CommissionSettleCheckVO">
+        SELECT
+        a.id,
+        a.commission_type,
+        a.settle_time,
+        a.settle_balance,
+        b.name as regionName
+        from commission_settle_check a
+        left join employee b on a.region_id = b.id
+        <where>
+            1=1
+            <if test="startTime != null">and a.settle_time<![CDATA[>= ]]>#{startTime}</if>
+            <if test="endTime != null">and a.settle_time<![CDATA[<= ]]>#{endTime}</if>
+            <if test="commissionType != null">
+                and a.commission_type = #{commissionType}
+            </if>
+            <if test="employeeId != null">
+                and a.bd_id = #{employeeId}
+            </if>
+            <if test="regionName != null and regionName != '' ">
+                and b.name LIKE concat(#{regionName}, '%')
+            </if>
+        </where>
+        order by a.settle_time desc
+    </select>
+
+    <select id="SumByParam" resultType="com.anyi.common.commission.response.CommissionSettleCheckSumVO">
+        SELECT
+        SUM(IF(a.commission_type = 4 , a.settle_balance, 0)) insuranceTotal,
+        SUM(IF(a.commission_type = 1 , a.settle_balance, 0)) mobileTotal,
+        SUM(IF(a.commission_type = 2 , a.settle_balance, 0)) appTotal
+        from commission_settle_check a
+        left join employee b on a.region_id = b.id
+        <where>
+            1=1
+            <if test="startTime != null">and a.settle_time<![CDATA[>= ]]>#{startTime}</if>
+            <if test="endTime != null">and a.settle_time<![CDATA[<= ]]>#{endTime}</if>
+            <if test="commissionType != null">
+                and a.commission_type = #{commissionType}
+            </if>
+            <if test="employeeId != null">
+                and a.bd_id = #{employeeId}
+            </if>
+            <if test="regionName != null and regionName != '' ">
+                and b.name LIKE concat(#{regionName}, '%')
+            </if>
+        </where>
+        order by a.settle_time desc
+    </select>
+
+
+</mapper>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.exchange.mapper.MbExchangeOrderMapper">
+
+    <select id="statPassGroupByEmployee" resultType="com.anyi.common.mobileStat.response.CompanyStatVO">
+        SELECT
+        count(1)  as exchangeAllNum,
+        SUM(IF(status=2,1,0)) exchangePassNum,
+        SUM(IF(type=3,1,0)) huanjiNum,
+        SUM(IF(type=3 and status=2,1,0)) huanjiPassNum,
+        SUM(IF(type=5,1,0)) lvzhouNum,
+        SUM(IF(type=5 and status=2,1,0)) lvzhouPassNum,
+        SUM(IF(type=6,1,0)) appleNum,
+        SUM(IF(type=6 and status=2,1,0)) applePassNum
+        FROM mb_exchange_order
+        WHERE
+           trial_time between #{beginTime} and #{endTime}
+        AND store_employee_id in
+        <foreach collection="employeeIds" index="index" item="empId" open="(" separator="," close=")">
+            #{empId}
+        </foreach>
+    </select>
+
+
+
+</mapper>

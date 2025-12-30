@@ -1,0 +1,170 @@
+server:
+  port: 22001
+spring:
+  profiles:
+    active: @env@
+  main:
+    allow-bean-definition-overriding: true
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+    time-zone: GMT+8
+mybatis-plus:
+  mapper-locations: classpath:**/*Mapper.xml,classpath*:/mapper/**/*.xml
+  type-aliases-package: com.anyi.sparrow.**.domain
+  global-config:
+    db-config:
+      field-strategy: NOT_EMPTY
+      db-type: MYSQL
+    refresh: false
+  configuration:
+    # 是否开启自动驼峰命名规则映射:从数据库列名到Java属性驼峰命名的类似映射
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+pangu:
+  mock:
+    bank: false
+logging:
+  config: classpath:config/logback-spring.xml
+
+wechat:
+  #微信公众号配置
+  mp:
+    appId: ${1234567}
+    appSecret: ${1234567}
+    aesKey: ${1234567}
+    token: ${1234567}
+ #小程序配置
+  mini:
+    appId: ${1234567}
+    appSecret: ${1234567}
+    title: "先通行，后付费 ，微信支付免绑卡"
+    pagePath: "/pages/index/index"
+
+ali:
+  oss:
+    accessKeyId: ${1234567}
+    accessKeySecret: ${1234567}
+    contractBucket: ${1234567}
+
+wx:
+  miniapp:
+    configs:
+      - appid: ${1234567}#微信小程序的appid
+        secret: ${1234567}#微信小程序的Secret
+        token: #微信小程序消息服务器配置的token
+        aesKey: #微信小程序消息服务器配置的EncodingAESKey
+        msgDataFormat: JSON
+  accessToken:
+    url: https://mobile.anyichuxing.com
+  pay:
+    key: ${1234567}
+    mchId: ${1234567}
+    cert: /cert/wxpay/apiclient_cert.p12
+    notifyUrl: https://issue-test.anyichuxing.com/wx/pay/v1.0/pay-callback
+    notifyRefundUrl: https://issue-test.anyichuxing.com/wx/pay/v1.0/refund-callback
+    notifyTemporaryUrl: https://issue-test.anyichuxing.com/wx/pay/v1.0/pay-callback/temporary
+    customerRefundPaymentNotifyUrl: https://quote-test.anyichuxing.com/mobile/customer/refund/payment/notify
+    digitalInsuranceOrderPaymentNotifyUrl: https://quote-test.anyichuxing.com/insurance/order/payment/notify
+    #安逸app支付
+    app:
+      appId: ${1234567}
+      mchId: ${1234567}
+      mchKey: ${1234567}
+      keyPath: /cert/wxpay/apiclient_cert.p12
+      notifyUrl: https://issue-test.anyichuxing.com/deposit/order/pay/app/notify
+
+    configs:
+
+      #信元
+      - appId: ${1234567} #微信公众号或者小程序等的appid
+        mchId: ${1234567} #微信支付商户号
+        mchKey: ${1234567}    #微信支付商户密钥
+        subAppId: ${1234567} #服务商模式下的子商户公众账号ID
+        subMchId: ${1234567} #服务商模式下的子商户号
+        notifyUrl: https://after-test.anyichuxing.com/pay/notify/order/xinyuan
+        #v3
+        apiV3Key: ${1234567} #V3密钥
+        certSerialNo: ${1234567}
+        keyPath: classpath:cert/xinyuan_service/apiclient_cert.p12 # p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
+        privateKeyPath: classpath:cert/xinyuan_service/apiclient_key.pem #apiclient_key.pem证书文件的绝对路径或者以classpath:开头的类路径
+        privateCertPath: classpath:cert/xinyuan_service/apiclient_cert.pem #apiclient_cert.pem证书文件的绝对路径或者以classpath:开头的类路径
+
+      #安逸
+      - appId: ${1234567} #微信公众号或者小程序等的appid
+        mchId: ${1234567} #微信支付商户号
+        mchKey: ${1234567}    #微信支付商户密钥
+        subAppId: ${1234567} #服务商模式下的子商户公众账号ID
+        subMchId: ${1234567} #服务商模式下的子商户号
+        notifyUrl: https://issue-test.anyichuxing.com/wx/pay/v1.0/pay-callback
+        #v3
+        apiV3Key: ${1234567} #V3密钥  服务商在服务商平台设置的API v3密钥，主要用于对敏感字段信息的加密或解密，具体设置流程请参考各产品接入前准备说明
+        certSerialNo: ${1234567}
+        keyPath: classpath:cert/anyi_service/apiclient_cert.p12 # p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
+        privateKeyPath: classpath:cert/anyi_service/apiclient_key.pem #apiclient_key.pem证书文件的绝对路径或者以classpath:开头的类路径
+        privateCertPath: classpath:cert/anyi_service/apiclient_cert.pem #apiclient_cert.pem证书文件的绝对路径或者以classpath:开头的类路径
+
+      #吉讯新商户号
+      - appId: ${1234567} #微信公众号或者小程序等的appid
+        mchId: ${1234567} #微信支付商户号
+        mchKey: ${1234567}    #微信支付商户密钥
+        subAppId: ${1234567} #服务商模式下的子商户公众账号ID
+        subMchId: ${1234567} #服务商模式下的子商户号
+        notifyUrl: https://issue-test.anyichuxing.com/wx/pay/v1.0/pay-callback
+        #v3
+        apiV3Key: ${1234567} #V3密钥  服务商在服务商平台设置的API v3密钥，主要用于对敏感字段信息的加密或解密，具体设置流程请参考各产品接入前准备说明
+        certSerialNo: ${1234567}
+        keyPath: classpath:cert/jixun_service/apiclient_cert.p12 # p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
+        privateKeyPath: classpath:cert/jixun_service/apiclient_key.pem #apiclient_key.pem证书文件的绝对路径或者以classpath:开头的类路径
+        privateCertPath: classpath:cert/jixun_service/apiclient_cert.pem #apiclient_cert.pem证书文件的绝对路径或者以classpath:开头的类路径
+
+      #信元(河南微果软件科技有限公司) -> 机享转
+      - appId: ${1234567} #微信公众号或者小程序等的appid
+        mchId: ${1234567} #微信支付商户号
+        #mchKey: ${1234567}    #微信支付商户密钥
+        subAppId: ${1234567} #服务商模式下的子商户公众账号ID
+        subMchId: ${1234567} #服务商模式下的子商户号
+        notifyUrl: https://issue-test.anyichuxing.com/wx/pay/v1.0/pay-callback
+        #v3
+        apiV3Key: ${1234567} #V3密钥
+        certSerialNo: ${1234567}
+        keyPath: classpath:cert/xinyuan_service/apiclient_cert.p12 # p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
+        privateKeyPath: classpath:cert/xinyuan_service/apiclient_key.pem #apiclient_key.pem证书文件的绝对路径或者以classpath:开头的类路径
+        privateCertPath: classpath:cert/xinyuan_service/apiclient_cert.pem #apiclient_cert.pem证书文件的绝对路径或者以classpath:开头的类路径
+swagger:
+  basic:
+     enable: true
+     username: anyichuxing@163.com
+     password: anyichuxing@163.com
+
+snowflakeid:
+  workerId: 1
+  datacenterId: 1
+
+jdl:
+#  appKey: ${1234567}
+  appKey: ${1234567}
+#  appSecret: ${1234567}
+  appSecret: ${1234567}
+#  customerCode: ${1234567}
+  customerCode: ${1234567}
+#  accessToken: ${1234567}
+  accessToken: ${1234567}
+#  serverUrl: https://uat-api.jdl.com
+  serverUrl: https://test-api.jdl.com
+
+qfu:
+  vendorId: ${1234567}
+  merchantId: ${1234567} #代征商户「虚拟银行」
+  agencyId: ${1234567} #上海题泓-API测试
+  clientKeyPath: cert/qfu/client_rsa_private_pkcs8.pem
+  serverKeyPath: cert/qfu/server_rsa_public_key.pem
+
+qfu-alipay:
+  vendorId: ${1234567}
+  merchantId: ${1234567} #代征商户「虚拟银行」
+  agencyId: ${1234567} #上海题泓-API测试
+  clientKeyPath: cert/qfu/client_rsa_private_pkcs8.pem
+  serverKeyPath: cert/qfu/server_rsa_public_key.pem

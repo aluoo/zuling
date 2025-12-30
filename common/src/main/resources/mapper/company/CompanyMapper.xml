@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.company.mapper.CompanyMapper">
+  <resultMap id="BaseResultMap" type="com.anyi.common.company.domain.Company">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="p_id" jdbcType="BIGINT" property="pId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="contact_mobile" jdbcType="VARCHAR" property="contactMobile" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="updator" jdbcType="VARCHAR" property="updator" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="apl_id" jdbcType="BIGINT" property="aplId" />
+    <result column="p_dept_id" jdbcType="BIGINT" property="pDeptId" />
+    <result column="invoice_able" jdbcType="BOOLEAN" property="invoiceAble" />
+
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, p_id, type, name, code, status, contact, contact_mobile, province, city, creator, 
+    updator, create_time, update_time, apl_id, pay_amount, p_dept_id, sn, bank, bank_account, invoice_able, deposit,deposit_able
+  </sql>
+  <select id="selectByExample" parameterType="com.anyi.common.company.domain.CompanyExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from company
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="countByExample" parameterType="com.anyi.common.company.domain.CompanyExample" resultType="java.lang.Long">
+    select count(*) from company
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <select id="selectByExampleWithRowbounds" parameterType="com.anyi.common.company.domain.CompanyExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from company
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="queryAutoSettleCompanyIds" resultType="java.lang.Long">
+    SELECT id
+    from company
+    where commission_able = 1
+  </select>
+
+  <select id="getByEmployee" resultType="com.anyi.common.company.vo.AgencyCompanyVO">
+    SELECT
+    a.id,
+    a.type,
+    a.name,
+    a.status,
+    a.contact,
+    a.contact_mobile,
+    a.province,
+    a.city,
+    a.region,
+    a.address,
+    a.front_url,
+    a.employee_id,
+    b.ancestors
+    FROM
+    company a
+    left join employee b on a.employee_id = b.id
+    <where>
+      1=1
+      <if test="req.empIds != null and req.empIds.size > 0">
+        and a.employee_id in
+        <foreach collection="req.empIds" index="index" item="empId" open="(" separator="," close=")">
+          #{empId}
+        </foreach>
+      </if>
+      <if test="req.parentIds != null and req.parentIds.size > 0">
+        and (a.apl_id = #{req.aplId} or a.p_id in
+        <foreach collection="req.parentIds" index="index" item="empId" open="(" separator="," close=")">
+          #{empId}
+        </foreach>
+        )
+      </if>
+      <if test="req.parentIds == null and req.aplId != null ">
+      and a.apl_id = #{req.aplId}
+      </if>
+      <if test="req.status != null">
+        and a.status = #{req.status}
+      </if>
+      <if test="req.type != null">
+        and a.type = #{req.type}
+      </if>
+      <if test="req.provinceCode != null and req.provinceCode != '' ">
+        and a.province_code = #{req.provinceCode}
+      </if>
+      <if test="req.cityCode != null and req.cityCode != '' ">
+        and a.city_code = #{req.cityCode}
+      </if>
+      <if test="req.regionCode != null and req.regionCode != '' ">
+        and a.region_code = #{req.regionCode}
+      </if>
+      order by a.create_time desc
+    </where>
+  </select>
+
+    <select id="recycleList" resultType="com.anyi.common.company.vo.RecycleCompanyVO">
+      SELECT
+      id,
+      name,
+      status,
+      province,
+      city,
+      region,
+      address,
+      front_url,
+      contact,
+      employee_id,
+      contact_mobile
+      FROM
+      company
+      <where>
+        type=4
+        <if test="req.status != null">
+          and status = #{req.status}
+        </if>
+        <if test="req.type != null">
+          and type = #{req.type}
+        </if>
+        <if test="req.provinceCode != null and req.provinceCode != '' ">
+          and province_code = #{req.provinceCode}
+        </if>
+        <if test="req.cityCode != null and req.cityCode != '' ">
+          and city_code = #{req.cityCode}
+        </if>
+        <if test="req.regionCode != null and req.regionCode != '' ">
+          and region_code = #{req.regionCode}
+        </if>
+        order by create_time desc
+        </where>
+    </select>
+
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.insurance.mapper.DiCompanyAccountMapper">
+
+    <update id="changeAccountBalance">
+        update di_company_account
+        set able_balance        = able_balance + #{employeeAccountLog.ableBalanceChange,jdbcType=BIGINT},
+            temp_frozen_balance = temp_frozen_balance + #{employeeAccountLog.tempFrozenBalanceChange,jdbcType=BIGINT},
+            frozen_balance      = frozen_balance + #{employeeAccountLog.frozenBalanceChange,jdbcType=BIGINT},
+            accumulate_income   = accumulate_income + #{employeeAccountLog.accumulateIncomeChange,jdbcType=BIGINT},
+            acc_award_income    = acc_award_income + #{employeeAccountLog.accAwardIncomeChange,jdbcType=BIGINT},
+            acc_withdraw        = acc_withdraw + #{employeeAccountLog.accWithdrawChange,jdbcType=BIGINT}
+        where id = #{employeeAccountLog.companyAccountId,jdbcType=BIGINT}
+    </update>
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.product.mapper.ProductMapper">
+
+    <select id="listProduct" resultType="com.anyi.common.product.domain.dto.ProductDTO">
+        select p.*, b.name as brandName, b.logo as brandLogo
+        from mb_product p
+        left join mb_brand b on p.brand_id = b.id
+        <where>
+        <if test="productIds != null and productIds.size() > 0">
+            and p.id in
+            <foreach collection="productIds" item="productId" open="(" separator="," close=")">
+                #{productId}
+            </foreach>
+        </if>
+        </where>
+    </select>
+</mapper>

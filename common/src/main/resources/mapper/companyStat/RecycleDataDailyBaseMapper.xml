@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.mobileStat.mapper.RecycleDataDailyBaseMapper">
+
+    <select id="recycleStat" resultType="com.anyi.common.mobileStat.response.RecycleStatVO">
+        SELECT
+        sum( trans_amount ) AS transAmount,
+        sum( trans_num ) AS transNum,
+        sum( refund_amount ) AS refundAmount,
+        sum( quote_price_num ) AS quotePriceNum,
+        sum( quote_time_spent ) AS quoteTimeSpent,
+        sum( order_confirm_num ) AS orderConfirmNum
+        from recycle_data_daily_base
+        <where>
+            1=1
+            <if test="startTime != null">and day<![CDATA[>= ]]>#{startTime}</if>
+            <if test="endTime != null">and day<![CDATA[<= ]]>#{endTime}</if>
+            <if test="employeeIds != null and employeeIds.size > 0">
+                AND employee_id in
+                <foreach collection="employeeIds" index="index" item="empId" open="(" separator="," close=")">
+                    #{empId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+</mapper>

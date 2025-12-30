@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.mbr.mapper.MbrPreOrderQuoteLogMapper">
+
+    <select id="countGroupByOrderIds"
+            resultType="com.anyi.common.mbr.response.PreOrderQuoteLogCountDTO">
+        select
+        order_id,
+        count(case when quoted = 1 then id else null end) as finishNum,
+        count(case when quoted = 0 then id else null end) as dealNum
+        from mbr_pre_order_quote_log
+        <where>
+            and deleted = 0
+            <if test="orderIds != null and orderIds.size() > 0">
+                and order_id in
+                <foreach collection="orderIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            group by order_id
+        </where>
+    </select>
+
+
+</mapper>

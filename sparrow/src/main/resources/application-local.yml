@@ -1,0 +1,94 @@
+spring:
+  #mysql数据源
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    #driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://47.98.111.11:3306/mobile?zeroDateTimeBehavior=convertToNull&autoReconnect=true&useSSL=false&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&rewriteBatchedStatements=true
+    username: root
+    password: af4fc87beb5d
+    druid:
+      initial-size: 5 #连接池初始化大小
+      min-idle: 10 #最小空闲连接数
+      max-active: 20 #最大连接数
+      web-stat-filter:
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*" #不统计这些请求数据
+      stat-view-servlet: #访问监控网页的登录用户名和密码
+        login-username: druid
+        login-password: druid
+  redis:
+    timeout: 2000 # 连接或读取超时时长（毫秒）
+    database: 7
+    host: ${1234567}
+    port: 6379
+    password: ${1234567}
+    lettuce:
+      pool:
+        max-active: 16
+        max-idle: 16
+        max-wait: 5s
+        min-idle: 0
+        time-between-eviction-runs: 1s #空闲对象逐出器线程的运行间隔时间.空闲连接线程释放周期时间.
+
+  main:
+    allow-circular-references: true
+
+#上上签配置
+best:
+  sign:
+    #开发者ID
+    developerId: ${1234567}
+    #开发者私钥
+    privateKey: ${1234567}
+    accessKey: ${1234567}
+    #服务器地址
+    serverHost: https://openapi.bestsign.info/openapi/v2
+    #企业账号
+    enterpriseAccount: xmaycx05@163.com
+    #模板编号
+    tid: 167048253701000001
+    #合同的标题
+    title: ETC办理
+    #接口的域名地址
+    urlDomain: "https://openapi.bestsign.info"
+    #小程序签署的域名地址
+    signDomain: "https://wx107.bestsign.info"
+    #模板的参数
+    params:
+      - name
+      - mobileNumber
+      - year
+      - month
+      - day
+
+anyicx:
+  highway:
+    shandong:
+      url: http://119.167.11.11:19001
+      instId: 10000004
+      netId: 100000040001
+      password: ${1234567}
+      sftpUrl: ${1234567}
+      sftpPort: 11022
+      sftpUserName: ${1234567}
+      sftpPwd: ${1234567}
+      mock: false
+    cyx:
+      baseUrl: http://218.29.11.14:8081
+      appId: ${1234567}
+      aesKeyPrivate: ${1234567}
+      rsaKeyPrivate: ${1234567}
+      timeout: 10000
+      mock: false
+  api-sign:
+    cyx:
+      appId: ${1234567}
+      secretKey: ${1234567}
+
+bc:
+  qrcode:
+    url: http://link.test.tmofamily.com/ejx?releaseAppid=10007&channel=fLiU
+  sign:
+    privateKey: ${1234567}
+    publicKey: ${1234567}
+    serverHost: https://etc-app.test.tmofamily.com
+    domain: http://link.test.tmofamily.com/ejx/

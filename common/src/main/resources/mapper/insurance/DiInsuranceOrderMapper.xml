@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.insurance.mapper.DiInsuranceOrderMapper">
+
+    <select id="statGroupByEmployee" resultType="com.anyi.common.mobileStat.response.CompanyStatVO">
+        SELECT
+        SUM(IF(insurance_type='全保',1,0)) insuranceAnyNum,
+        SUM(IF(insurance_type='碎屏保',1,0)) insuranceSpNum,
+        SUM(IF(insurance_type='延长保',1,0)) insuranceYbNum,
+        SUM(IF(insurance_type='Care+',1,0)) insuranceCareNum,
+        SUM(IF(insurance_type='安卓终身保',1,0)) insuranceAzNum
+        FROM
+            di_insurance_order
+        WHERE
+            status=2 and  create_time between #{beginTime} and #{endTime}
+        AND store_employee_id in
+        <foreach collection="employeeIds" index="index" item="empId" open="(" separator="," close=")">
+            #{empId}
+        </foreach>
+    </select>
+
+
+</mapper>

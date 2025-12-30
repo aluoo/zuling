@@ -1,0 +1,12 @@
+/.idea/
+/miniapp/target/
+/miniapp/miniapp.iml
+
+/common/target/
+/common/common.iml
+
+/sparrow/target/
+/sparrow/sparrow.iml
+
+/mobile-task/target/
+/mobile-task/mobile-task.iml

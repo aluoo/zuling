@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.sparrow.assist.verify.dao.mapper.ExtVerifyCodeMapper">
+  <resultMap id="BaseResultMap" type="com.anyi.sparrow.assist.verify.domain.VerifyCode">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="mobile_number" jdbcType="VARCHAR" property="mobileNumber" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+    <result column="expire_time" jdbcType="TIMESTAMP" property="expireTime" />
+    <result column="biz" jdbcType="VARCHAR" property="biz" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, mobile_number, code, status, expire_time, biz, create_time
+  </sql>
+  <select id="getLatest" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> FROM verify_code WHERE biz = #{biz}
+    AND mobile_number = #{mobile} ORDER BY create_time desc LIMIT 1
+  </select>
+  <select id="getTodayTimes" resultType="java.lang.Integer">
+    SELECT count(1) FROM verify_code WHERE biz = #{biz} AND mobile_number = #{mobile}
+    AND TO_DAYS(create_time) = TO_DAYS(NOW())
+  </select>
+    <select id="getTotalTimes" resultType="java.lang.Integer">
+      SELECT count(1) FROM verify_code WHERE biz = #{biz} AND mobile_number = #{mobile}
+    </select>
+</mapper>

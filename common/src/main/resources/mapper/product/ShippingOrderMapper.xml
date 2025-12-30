@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.product.mapper.ShippingOrderMapper">
+
+    <select id="listByOrderId" resultType="com.anyi.common.product.domain.dto.ShippingOrderDTO">
+        select o.*, r.order_id as orderId
+        from mb_shipping_order o
+        inner join mb_shipping_order_rel r on o.id = r.shipping_order_id
+        <where>
+            and o.deleted = 0
+            and o.status != -1
+            <if test="orderIds != null and orderIds.size() > 0">
+                and r.order_id in
+                <foreach collection="orderIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.sparrow.organize.employee.dao.mapper.ExtEmpCfgMapper">
+
+    <select id="getMax" resultType="java.lang.String">
+        select MAX(operator_id) FROM emp_cfg
+    </select>
+    <select id="getByBankUserId" resultType="java.lang.String">
+        SELECT operator_id from emp_cfg where bank_user_id = #{bankUserId} LIMIT 1
+    </select>
+</mapper>

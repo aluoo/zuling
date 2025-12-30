@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.sparrow.assist.projects.dao.mapper.SysProjectsMapper">
+  <resultMap id="BaseResultMap" type="com.anyi.sparrow.assist.projects.domain.SysProjects">
+    <id column="project_id" jdbcType="INTEGER" property="projectId" />
+    <result column="project_code" jdbcType="INTEGER" property="projectCode" />
+    <result column="project_name" jdbcType="VARCHAR" property="projectName" />
+    <result column="device" jdbcType="INTEGER" property="device" />
+    <result column="build_code" jdbcType="INTEGER" property="buildCode" />
+    <result column="version_code" jdbcType="VARCHAR" property="versionCode" />
+    <result column="online_time" jdbcType="TIMESTAMP" property="onlineTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="download_url" jdbcType="VARCHAR" property="downloadUrl" />
+    <result column="forced_updating" jdbcType="INTEGER" property="forcedUpdating" />
+    <result column="creat_time" jdbcType="TIMESTAMP" property="creatTime" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.anyi.sparrow.assist.projects.domain.SysProjects">
+    <result column="readme" jdbcType="LONGVARCHAR" property="readme" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    project_id, project_code, project_name, device, build_code, version_code, online_time, 
+    status, download_url, forced_updating, creat_time, creator, readme
+  </sql>
+  <sql id="Blob_Column_List">
+    readme
+  </sql>
+  <select id="selectByExampleWithBLOBs" parameterType="com.anyi.sparrow.assist.projects.domain.SysProjectsExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_projects
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" parameterType="com.anyi.sparrow.assist.projects.domain.SysProjectsExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from sys_projects
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_projects
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_projects
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.anyi.sparrow.assist.projects.domain.SysProjectsExample">
+    delete from sys_projects
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.anyi.sparrow.assist.projects.domain.SysProjects">
+    insert into sys_projects (project_id, project_code, project_name, 
+      device, build_code, version_code, 
+      online_time, status, download_url, 
+      forced_updating, creat_time, creator, 
+      readme)
+    values (#{projectId,jdbcType=INTEGER}, #{projectCode,jdbcType=INTEGER}, #{projectName,jdbcType=VARCHAR}, 
+      #{device,jdbcType=INTEGER}, #{buildCode,jdbcType=INTEGER}, #{versionCode,jdbcType=VARCHAR}, 
+      #{onlineTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{downloadUrl,jdbcType=VARCHAR}, 
+      #{forcedUpdating,jdbcType=INTEGER}, #{creatTime,jdbcType=TIMESTAMP}, #{creator,jdbcType=VARCHAR}, 
+      #{readme,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.anyi.sparrow.assist.projects.domain.SysProjects">
+    insert into sys_projects
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        project_id,
+      </if>
+      <if test="projectCode != null">
+        project_code,
+      </if>
+      <if test="projectName != null">
+        project_name,
+      </if>
+      <if test="device != null">
+        device,
+      </if>
+      <if test="buildCode != null">
+        build_code,
+      </if>
+      <if test="versionCode != null">
+        version_code,
+      </if>
+      <if test="onlineTime != null">
+        online_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="downloadUrl != null">
+        download_url,
+      </if>
+      <if test="forcedUpdating != null">
+        forced_updating,
+      </if>
+      <if test="creatTime != null">
+        creat_time,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="readme != null">
+        readme,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="projectCode != null">
+        #{projectCode,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null">
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="device != null">
+        #{device,jdbcType=INTEGER},
+      </if>
+      <if test="buildCode != null">
+        #{buildCode,jdbcType=INTEGER},
+      </if>
+      <if test="versionCode != null">
+        #{versionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineTime != null">
+        #{onlineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="downloadUrl != null">
+        #{downloadUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="forcedUpdating != null">
+        #{forcedUpdating,jdbcType=INTEGER},
+      </if>
+      <if test="creatTime != null">
+        #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="readme != null">
+        #{readme,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.anyi.sparrow.assist.projects.domain.SysProjectsExample" resultType="java.lang.Long">
+    select count(*) from sys_projects
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update sys_projects
+    <set>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=INTEGER},
+      </if>
+      <if test="record.projectCode != null">
+        project_code = #{record.projectCode,jdbcType=INTEGER},
+      </if>
+      <if test="record.projectName != null">
+        project_name = #{record.projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.device != null">
+        device = #{record.device,jdbcType=INTEGER},
+      </if>
+      <if test="record.buildCode != null">
+        build_code = #{record.buildCode,jdbcType=INTEGER},
+      </if>
+      <if test="record.versionCode != null">
+        version_code = #{record.versionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.onlineTime != null">
+        online_time = #{record.onlineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.downloadUrl != null">
+        download_url = #{record.downloadUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.forcedUpdating != null">
+        forced_updating = #{record.forcedUpdating,jdbcType=INTEGER},
+      </if>
+      <if test="record.creatTime != null">
+        creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.creator != null">
+        creator = #{record.creator,jdbcType=VARCHAR},
+      </if>
+      <if test="record.readme != null">
+        readme = #{record.readme,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map">
+    update sys_projects
+    set project_id = #{record.projectId,jdbcType=INTEGER},
+      project_code = #{record.projectCode,jdbcType=INTEGER},
+      project_name = #{record.projectName,jdbcType=VARCHAR},
+      device = #{record.device,jdbcType=INTEGER},
+      build_code = #{record.buildCode,jdbcType=INTEGER},
+      version_code = #{record.versionCode,jdbcType=VARCHAR},
+      online_time = #{record.onlineTime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=INTEGER},
+      download_url = #{record.downloadUrl,jdbcType=VARCHAR},
+      forced_updating = #{record.forcedUpdating,jdbcType=INTEGER},
+      creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      creator = #{record.creator,jdbcType=VARCHAR},
+      readme = #{record.readme,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update sys_projects
+    set project_id = #{record.projectId,jdbcType=INTEGER},
+      project_code = #{record.projectCode,jdbcType=INTEGER},
+      project_name = #{record.projectName,jdbcType=VARCHAR},
+      device = #{record.device,jdbcType=INTEGER},
+      build_code = #{record.buildCode,jdbcType=INTEGER},
+      version_code = #{record.versionCode,jdbcType=VARCHAR},
+      online_time = #{record.onlineTime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=INTEGER},
+      download_url = #{record.downloadUrl,jdbcType=VARCHAR},
+      forced_updating = #{record.forcedUpdating,jdbcType=INTEGER},
+      creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      creator = #{record.creator,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.anyi.sparrow.assist.projects.domain.SysProjects">
+    update sys_projects
+    <set>
+      <if test="projectCode != null">
+        project_code = #{projectCode,jdbcType=INTEGER},
+      </if>
+      <if test="projectName != null">
+        project_name = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="device != null">
+        device = #{device,jdbcType=INTEGER},
+      </if>
+      <if test="buildCode != null">
+        build_code = #{buildCode,jdbcType=INTEGER},
+      </if>
+      <if test="versionCode != null">
+        version_code = #{versionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineTime != null">
+        online_time = #{onlineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="downloadUrl != null">
+        download_url = #{downloadUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="forcedUpdating != null">
+        forced_updating = #{forcedUpdating,jdbcType=INTEGER},
+      </if>
+      <if test="creatTime != null">
+        creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="readme != null">
+        readme = #{readme,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.anyi.sparrow.assist.projects.domain.SysProjects">
+    update sys_projects
+    set project_code = #{projectCode,jdbcType=INTEGER},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      device = #{device,jdbcType=INTEGER},
+      build_code = #{buildCode,jdbcType=INTEGER},
+      version_code = #{versionCode,jdbcType=VARCHAR},
+      online_time = #{onlineTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      download_url = #{downloadUrl,jdbcType=VARCHAR},
+      forced_updating = #{forcedUpdating,jdbcType=INTEGER},
+      creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR},
+      readme = #{readme,jdbcType=LONGVARCHAR}
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.anyi.sparrow.assist.projects.domain.SysProjects">
+    update sys_projects
+    set project_code = #{projectCode,jdbcType=INTEGER},
+      project_name = #{projectName,jdbcType=VARCHAR},
+      device = #{device,jdbcType=INTEGER},
+      build_code = #{buildCode,jdbcType=INTEGER},
+      version_code = #{versionCode,jdbcType=VARCHAR},
+      online_time = #{onlineTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      download_url = #{downloadUrl,jdbcType=VARCHAR},
+      forced_updating = #{forcedUpdating,jdbcType=INTEGER},
+      creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      creator = #{creator,jdbcType=VARCHAR}
+    where project_id = #{projectId,jdbcType=INTEGER}
+  </update>
+  <select id="selectByExampleWithBLOBsWithRowbounds" parameterType="com.anyi.sparrow.assist.projects.domain.SysProjectsExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_projects
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExampleWithRowbounds" parameterType="com.anyi.sparrow.assist.projects.domain.SysProjectsExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from sys_projects
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+</mapper>

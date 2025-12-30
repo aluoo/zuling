@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.mobileStat.mapper.CompanyDataDailyBaseMapper">
+
+    <select id="companyStat" resultType="com.anyi.common.mobileStat.response.CompanyStatVO">
+        SELECT
+        sum( trans_num ) AS transNum,
+        sum( order_num ) AS orderNum,
+        sum( price_num ) AS priceNum,
+        sum( final_price_amount ) AS finalPriceAmount,
+        sum( commission_amount ) AS commissionAmount,
+        sum( cancel_num ) AS cancelNum,
+        sum( overtime_num ) AS overtimeNum,
+        sum( order_num ) AS orderNum,
+        sum( exchange_num ) AS exchangeNum,
+        sum( exchange_pass_num ) AS exchangePassNum,
+        sum( insurance_any_num ) AS insuranceAnyNum,
+        sum( insurance_sp_num ) AS insuranceSpNum,
+        sum( insurance_yb_num ) AS insuranceYbNum,
+        sum( insurance_care_num ) AS insuranceCareNum,
+        sum( insurance_az_num ) AS insuranceAzNum
+        from company_data_daily_base
+        <where>
+            1=1
+            <if test="startTime != null">and day<![CDATA[>= ]]>#{startTime}</if>
+            <if test="endTime != null">and day<![CDATA[<= ]]>#{endTime}</if>
+            <if test="employeeIds != null and employeeIds.size > 0">
+                AND employee_id in
+                <foreach collection="employeeIds" index="index" item="empId" open="(" separator="," close=")">
+                    #{empId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+</mapper>

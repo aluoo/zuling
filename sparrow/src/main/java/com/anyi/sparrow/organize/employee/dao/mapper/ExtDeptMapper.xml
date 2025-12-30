@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.sparrow.organize.employee.dao.mapper.ExtDeptMapper">
+    <update id="deleteChannel">
+        UPDATE dept set status = #{dept.status},
+                        update_time = #{dept.updateTime},
+                        updator = #{dept.updator}
+        WHERE status = 1 AND (code = #{code} OR code LIKE concat(#{code}, '-%'))
+    </update>
+
+    <select id="getAllChildDepts" resultType="com.anyi.sparrow.organize.employee.vo.DeptListRs">
+        SELECT id, name,code,type,company_id
+        from dept
+        where company_id = #{companyId} AND status = 1
+          AND code LIKE '${deptCode}%'
+          ORDER BY id
+    </select>
+
+    <select id="getAllStatusChildDepts" resultType="com.anyi.sparrow.organize.employee.vo.DeptListRs">
+        SELECT id, name,code,type,company_id
+        from dept
+        where company_id = #{companyId}
+          AND code LIKE '${deptCode}%'
+          ORDER BY id
+    </select>
+
+    <select id="getChildDepts" resultType="com.anyi.sparrow.organize.employee.vo.DeptListRs">
+        SELECT id, name,code,type,company_id
+        from dept
+        where status = 1
+        <if test="companyId != null">
+            AND company_id = #{companyId} AND
+        </if>
+        AND p_dept_id = #{deptId}
+        ORDER BY id
+    </select>
+    
+    <select id="getChildDeptsAndTotal" resultType="com.anyi.sparrow.organize.employee.vo.DeptListTotalRs">
+        SELECT id, name,code,type,company_id,
+        (SELECT count(1) FROM employee e WHERE (e.dept_code = code or e.dept_code like CONCAT(code,'-','%')) and status = 1) total_person
+        from dept
+        where status = 1
+        <if test="companyId != null">
+            AND company_id = #{companyId} AND
+        </if>
+        AND p_dept_id = #{deptId}
+        ORDER BY id
+    </select>
+
+    <select id="selectMaxCode" resultType="int">
+        SELECT MAX(d.num) FROM (SELECT CONVERT(SUBSTRING_INDEX(code, "-", -1),SIGNED) num FROM dept WHERE p_dept_id = #{pdeptId}) d
+    </select>
+
+    <select id="queryTotalEm" resultType="int">
+        SELECT count(1) FROM employee WHERE status = 1 AND (dept_code = #{deptCode} OR dept_code LIKE '${childDeptCode}%')
+    </select>
+
+    <update id="updateChildsCode">
+        UPDATE dept SET code = CONCAT(#{newPcode}, SUBSTRING(code, CHAR_LENGTH(#{oldPcode}) + 1, CHAR_LENGTH(code))), update_time = #{updateTime}, updator = #{updator}
+        WHERE company_id in
+        <foreach collection="cmpIds" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND code LIKE CONCAT(#{oldPcode}, '-%')
+    </update>
+
+    <select id="queryCmpIdByCode" resultType="long">
+        SELECT company_id FROM dept WHERE code LIKE CONCAT(#{code}, '-%')
+    </select>
+    <select id="queryTotalEmAll" resultType="java.lang.Integer">
+        SELECT count(0) FROM employee
+    where  status in (1, 3)
+    <if test="deptId != null">
+       AND  (dept_id = #{deptId} OR dept_code LIKE concat(#{code}, '%'))
+    </if>
+    <if test="companyType != null">
+        AND company_type = #{companyType}
+    </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,229 @@
+# 项目相关配置
+anyi:
+  name: miniapp # 名称
+  version: 1.0.0 # 版本
+  copyrightYear: 2024 # 版权年份
+  profile: /Users/jianpan/Downloads  # 文件路径
+  addressEnabled: false # 获取ip地址开关
+  captchaType: math # 验证码类型 math 数组计算 char 字符验证
+  testEnable: true
+
+
+
+# 开发环境配置
+server:
+  # 服务器的HTTP端口，默认为8080
+  port: 8060
+  servlet:
+    # 应用的访问路径
+    context-path: /
+  tomcat:
+    # tomcat的URI编码
+    uri-encoding: UTF-8
+    # 连接数满后的排队数，默认为100
+    accept-count: 1000
+    threads:
+      # tomcat最大线程数，默认为200
+      max: 800
+      # Tomcat启动初始化的线程数，默认值10
+      min-spare: 100
+
+
+# Spring配置
+spring:
+  # 资源信息
+  messages:
+    # 国际化资源文件路径
+    basename: i18n/messages
+  profiles:
+    active: local
+  # 文件上传
+  servlet:
+    multipart:
+      # 单个文件大小
+      max-file-size: 10MB
+      # 设置总上传的文件大小
+      max-request-size: 20MB
+  # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: true
+  # redis 配置
+  redis:
+    # 地址
+    # 端口，默认为6379
+    port: 6379
+    # 数据库索引
+    database: 3
+    # 密码
+    password: 889900
+    # 连接超时时间
+    timeout: 10s
+    lettuce:
+      pool:
+        # 连接池中的最小空闲连接
+        min-idle: 0
+        # 连接池中的最大空闲连接
+        max-idle: 8
+        # 连接池的最大数据库连接数
+        max-active: 8
+        # #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1ms
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  output:
+    ansi:
+      enabled: always
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8 #时差问题
+    serialization:
+      write_dates_as_timestamps: false
+
+
+
+# token配置
+token:
+  # 令牌自定义标识
+  header: Authorization
+  # 令牌密钥
+  secret: abcdefghijklmnopqrstuvwxyz123
+  # 令牌有效期（默认30分钟）
+  expireTime: 300
+
+# MyBatis配置
+mybatis-plus:
+  type-aliases-package: com.anyi.**.entity
+  mapper-locations: classpath:**/*Mapper.xml,classpath*:/mapper/**/*.xml
+  config-location: classpath:mybatis/mybatis-config.xml
+
+
+# Swagger配置
+swagger:
+  # 是否开启swagger
+  enabled: true
+  # 请求前缀
+  pathMapping: /
+  basic:
+    enable: true
+    username: anyichuxing@163.com
+    password: anyichuxing@163.com
+wx:
+  accessToken:
+    url: https://mobile-test.anyichuxing.com
+  miniapp:
+    configs:
+      - appid: ${1234567}#微信小程序的appid
+        secret: ${1234567}#微信小程序的Secret
+        token: #微信小程序消息服务器配置的token
+        aesKey: #微信小程序消息服务器配置的EncodingAESKey
+        msgDataFormat: JSON
+  pay:
+    notify:
+      etcCancelPayUrl: https://after-test.anyichuxing.com/highway/etc/cancel/pay/order/notify
+      etcCancelRefundUrl: https://after-test.anyichuxing.com/highway/etc/cancel/refund/order/notify
+    configs:
+      #信元
+      - appId: ${1234567} #微信公众号或者小程序等的appid
+        mchId: ${1234567} #微信支付商户号
+        #mchKey: ${1234567}    #微信支付商户密钥
+        subAppId: ${1234567} #服务商模式下的子商户公众账号ID
+        subMchId: ${1234567} #服务商模式下的子商户号
+        notifyUrl: https://after-test.anyichuxing.com/pay/notify/order/xinyuan
+        #v3
+        apiV3Key: ${1234567} #V3密钥
+        certSerialNo: ${1234567}
+        keyPath: classpath:cert/xinyuan_service/apiclient_cert.p12 # p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
+        privateKeyPath: classpath:cert/xinyuan_service/apiclient_key.pem #apiclient_key.pem证书文件的绝对路径或者以classpath:开头的类路径
+        privateCertPath: classpath:cert/xinyuan_service/apiclient_cert.pem #apiclient_cert.pem证书文件的绝对路径或者以classpath:开头的类路径
+
+      #安逸
+      - appId: ${1234567} #微信公众号或者小程序等的appid
+        mchId: ${1234567} #微信支付商户号
+        #mchKey: ${1234567}    #微信支付商户密钥
+        subAppId: ${1234567} #服务商模式下的子商户公众账号ID
+        subMchId: ${1234567} #服务商模式下的子商户号
+        notifyUrl: https://after-test.anyichuxing.com/pay/notify/order/anyi
+        #v3
+        apiV3Key: ${1234567} #V3密钥  服务商在服务商平台设置的API v3密钥，主要用于对敏感字段信息的加密或解密，具体设置流程请参考各产品接入前准备说明
+        certSerialNo: ${1234567}
+        keyPath: classpath:cert/anyi_service/apiclient_cert.p12 # p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
+        privateKeyPath: classpath:cert/anyi_service/apiclient_key.pem #apiclient_key.pem证书文件的绝对路径或者以classpath:开头的类路径
+        privateCertPath: classpath:cert/anyi_service/apiclient_cert.pem #apiclient_cert.pem证书文件的绝对路径或者以classpath:开头的类路径
+
+      #吉讯新商户号
+      - appId: ${1234567} #微信公众号或者小程序等的appid
+        mchId: ${1234567} #微信支付商户号
+        mchKey: ${1234567}    #微信支付商户密钥
+        subAppId: ${1234567} #服务商模式下的子商户公众账号ID
+        subMchId: ${1234567} #服务商模式下的子商户号
+        notifyUrl: https://issue-test.anyichuxing.com/wx/pay/v1.0/pay-callback
+        #v3
+        apiV3Key: ${1234567} #V3密钥  服务商在服务商平台设置的API v3密钥，主要用于对敏感字段信息的加密或解密，具体设置流程请参考各产品接入前准备说明
+        certSerialNo: ${1234567}
+        keyPath: classpath:cert/jixun_service/apiclient_cert.p12 # p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
+        privateKeyPath: classpath:cert/jixun_service/apiclient_key.pem #apiclient_key.pem证书文件的绝对路径或者以classpath:开头的类路径
+        privateCertPath: classpath:cert/jixun_service/apiclient_cert.pem #apiclient_cert.pem证书文件的绝对路径或者以classpath:开头的类路径
+
+      #信元 -> 机享转
+      - appId: ${1234567} #微信公众号或者小程序等的appid
+        mchId: ${1234567} #微信支付商户号
+        #mchKey: ${1234567}    #微信支付商户密钥
+        subAppId: ${1234567} #服务商模式下的子商户公众账号ID
+        subMchId: ${1234567} #服务商模式下的子商户号
+        notifyUrl: https://after-test.anyichuxing.com/pay/notify/order/xinyuan
+        #v3
+        apiV3Key: ${1234567} #V3密钥
+        certSerialNo: ${1234567}
+        keyPath: classpath:cert/xinyuan_service/apiclient_cert.p12 # p12证书的位置，可以指定绝对路径，也可以指定类路径（以classpath:开头）
+        privateKeyPath: classpath:cert/xinyuan_service/apiclient_key.pem #apiclient_key.pem证书文件的绝对路径或者以classpath:开头的类路径
+        privateCertPath: classpath:cert/xinyuan_service/apiclient_cert.pem #apiclient_cert.pem证书文件的绝对路径或者以classpath:开头的类路径
+
+snowflakeid:
+  workerId: 1
+  datacenterId: 1
+
+ali:
+  oss:
+    accessKeyId: ${1234567}
+    accessKeySecret: ${1234567}
+    contractBucket: ${1234567}
+
+sparrow:
+  baseUrl:${1234567}
+  blackToken: ${1234567}
+
+jdl:
+
+  appKey: ${1234567}
+
+  appSecret: ${1234567}
+
+  customerCode: ${1234567}
+
+  accessToken: ${1234567}
+
+  serverUrl: ${1234567}
+
+qfu:
+  vendorId: ${1234567}
+  merchantId: ${1234567}
+  agencyId: ${1234567}
+  clientKeyPath: ${1234567}
+  serverKeyPath: ${1234567}
+  
+qfu-alipay:
+  vendorId: ${1234567}
+  merchantId: ${1234567}
+  agencyId: ${1234567}
+  clientKeyPath: ${1234567}
+  serverKeyPath: ${1234567}

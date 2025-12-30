@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="PATTERN" value="sparrow %d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{18} - %msg%n"/>
+
+    <property name="FILE-PATH" value="/data/logs"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="APPLICATION-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${FILE-PATH}/sparrow/application/application.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${FILE-PATH}/sparrow/application/application.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <MaxHistory>100</MaxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <springProfile name="local">
+        <logger name="com.anyi" level="DEBUG" additivity="false">
+            <appender-ref ref="APPLICATION-FILE"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="develop,test,pre">
+        <logger name="com.anyi" level="DEBUG" additivity="false">
+            <appender-ref ref="APPLICATION-FILE"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <root level="INFO">
+            <appender-ref ref="APPLICATION-FILE"/>
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="production">
+        <logger name="com.anyi" level="DEBUG" additivity="false">
+            <appender-ref ref="APPLICATION-FILE"/>
+            <appender-ref ref="CONSOLE"/>
+        </logger>
+        <root level="INFO">
+            <appender-ref ref="APPLICATION-FILE"/>
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+
+</configuration>

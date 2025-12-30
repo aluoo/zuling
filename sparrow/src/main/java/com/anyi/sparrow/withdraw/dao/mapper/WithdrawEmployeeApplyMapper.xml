@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.sparrow.withdraw.dao.mapper.WithdrawEmployeeApplyMapper">
+
+    <select id="queryAccWithdrawAmountByAccountNo" resultType="java.lang.Long">
+        select IFNULL(sum(amount), 0)
+        from withdraw_employee_apply
+        where employee_id = #{employeeId,jdbcType=BIGINT}
+          and account_no = #{accountNo,jdbcType=VARCHAR}
+          and update_time &gt;= #{startDate}
+          and update_time &lt; #{stopDate}
+          and status = #{status,jdbcType=INTEGER}
+    </select>
+    <select id="queryAccWithdrawAmountCommitted" resultType="java.lang.Long">
+        select IFNULL(sum(amount), 0)
+        from withdraw_employee_apply
+        where employee_id = #{employeeId,jdbcType=BIGINT}
+          and account_no = #{accountNo,jdbcType=VARCHAR}
+          and update_time &gt;= #{startDate}
+          and update_time &lt; #{stopDate}
+          and status in (0, 1, 2, 3)
+
+    </select>
+</mapper>

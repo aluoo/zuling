@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.sparrow.organize.employee.dao.mapper.ExtEmMapper">
+    <update id="deleteChannel">
+        UPDATE employee SET status = #{employee.status},
+                            update_time = #{employee.updateTime},
+                            updator = #{employee.updator}
+        WHERE status = 1 AND ( dept_code = #{code} or dept_code LIKE CONCAT(#{code}, '-%'))
+    </update>
+
+    <select id="verifyManager" resultType="long">
+        SELECT id
+        FROM employee
+        WHERE id = #{childId}
+          AND company_id = #{user.companyId}
+          AND dept_code LIKE '${user.deptCode}%'
+    </select>
+    <select id="queryByNameOrMobile" resultType="com.anyi.sparrow.organize.employee.vo.EmInfo">
+        SELECT e.id, e.company_id, e.dept_id, e.name, e.mobile_number, d.name deptName, c.name companyName,
+               if(e.id = 100000000000000100, true, false) as matCenter
+        FROM employee e
+        LEFT JOIN dept d
+        ON e.dept_id = d.id
+        left join employee m ON (d.id = m.dept_id AND m.type = 3 AND m.status = 1)
+        LEFT JOIN company c ON e.company_id = c.id
+        <where>
+            e.status = 1 AND d.status = 1 AND
+            (
+            <choose>
+                <when test="user.type != 4">
+                    d.p_dept_id = #{user.deptId} AND (d.type = 1 OR m.id IS NULL OR e.type = 3)
+                </when>
+                <otherwise>
+                    (e.type = 3 AND e.dept_id = #{user.deptId})
+                </otherwise>
+            </choose>
+            <if test="user.type == 3">
+                OR (e.type = 4 AND e.dept_id = #{user.deptId})
+            </if>
+            <if test="user.id == 100000000000000100L">
+                OR (e.company_type = 2 AND e.type = 1)
+            </if>
+            <choose>
+                <when test="user.type == 1  and user.companyType == 2">
+                    OR e.id = 100000000000000100 OR (e.dept_id = #{user.deptId} AND e.type = 2)
+                </when>
+                <when test="user.type == 2">
+                    OR (e.type = 1 AND e.dept_id = #{user.deptId})
+                </when>
+                <otherwise>
+                    <if test="parent != null and parent.type == 2 and !hadManger">
+                        OR (e.dept_id = #{parent.id} AND e.type = 3)
+                    </if>
+                    <if test="parent != null and parent.type == 1 and !hadManger">
+                        OR e.dept_id = #{parent.id}
+                    </if>
+                </otherwise>
+            </choose>
+            )
+            AND (e.name like '%${express}%'
+            OR e.mobile_number LIKE '%${express}%')
+        </where>
+
+    </select>
+
+    <update id="updateDeptCode">
+        UPDATE employee e SET e.dept_code = (SELECT d.code FROM dept d WHERE e.dept_id = d.id),e.update_time = #{updateTime},e.updator = #{updator}
+        where e.company_id in
+        <foreach collection="cmpIds" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        <if test="deptCode != null">
+            AND (e.dept_code = #{deptCode} OR e.dept_code LIKE CONCAT(#{deptCode}, '-%'))
+        </if>
+    </update>
+
+    <select id="queryTokenByDeptCode" resultType="java.util.Map">
+        SELECT el.token as token, e.dept_code as deptCode FROM employee_login el
+        INNER JOIN (
+            SELECT id, dept_code FROM employee
+            where company_id in
+            <foreach collection="cmpIds" index="index" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+            <if test="deptCode != null">
+                AND (dept_code = #{deptCode} OR dept_code LIKE CONCAT(#{deptCode}, '-%'))
+            </if>
+        ) e
+        ON el.user_id = e.id
+        WHERE el.token_expire &gt; #{currDate}
+    </select>
+</mapper>

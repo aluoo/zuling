@@ -1,0 +1,81 @@
+package com.anyi.common.service;
+
+import cn.hutool.core.exceptions.ExceptionUtil;
+import com.anyi.common.domain.entity.AbstractBaseEntity;
+import com.anyi.common.product.domain.Order;
+import com.anyi.common.product.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+
+/**
+ * @author WangWJ
+ * @Description
+ * @Date 2024/3/19
+ * @Copyright
+ * @Version 1.0
+ */
+@Slf4j
+@Service
+public class OrderNoProcessService {
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    public static final String ORDER_NO_COUNT = "mobile_mb_order_no_count";
+
+    public String nextOrderNo() {
+        // 生成订单码，6位，纯数字，唯一，用redis递增
+        // get and increase
+        String cacheValue = getFromCache();
+        String orderNo = String.format("%06d", Integer.parseInt(cacheValue));
+        incrementOrderNoCount();
+        return orderNo;
+    }
+
+    private void incrementOrderNoCount() {
+        redisTemplate.opsForValue().increment(ORDER_NO_COUNT);
+    }
+
+    private String getFromCache() {
+        if (Boolean.FALSE.equals(redisTemplate.hasKey(ORDER_NO_COUNT))) {
+            rebuildCount();
+        }
+        return redisTemplate.opsForValue().get(ORDER_NO_COUNT);
+    }
+
+    @PostConstruct
+    public void rebuildCount() {
+        log.info("init order no count.start");
+        if (Boolean.TRUE.equals(redisTemplate.hasKey(ORDER_NO_COUNT))) {
+            log.info("init order no count.end: exist");
+            return;
+        }
+        Integer cnt = null;
+        Order order = orderService.lambdaQuery()
+                .select(Order::getId, Order::getOrderNo)
+                .orderByDesc(AbstractBaseEntity::getCreateTime)
+                .orderByDesc(Order::getId)
+                .orderByDesc(Order::getOrderNo)
+                .last("limit 1")
+                .one();
+        if (order != null) {
+            try {
+                cnt = Integer.parseInt(order.getOrderNo());
+            } catch (NumberFormatException e) {
+                log.info("rebuildCount.error: {}", ExceptionUtil.getMessage(e));
+            }
+        }
+        if (cnt == null) {
+            Long count = orderService.lambdaQuery().count();
+            cnt = count.intValue();
+        }
+        String value = String.valueOf(cnt + 1);
+        redisTemplate.opsForValue().set(ORDER_NO_COUNT, value);
+        log.info("init order no count.end: rebuild {}", value);
+    }
+}

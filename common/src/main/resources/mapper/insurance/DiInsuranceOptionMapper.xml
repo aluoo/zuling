@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.insurance.mapper.DiInsuranceOptionMapper">
+
+    <select id="getByInsuranceId" resultType="com.anyi.common.insurance.domain.DiOption">
+        SELECT
+        b.*
+        FROM
+            di_insurance_option a
+        left join di_option b on a.option_id = b.id
+        WHERE
+            a.insurance_id = #{insuranceId}
+        <if test="code != null and code != '' ">
+            and b.code  = #{code}
+        </if>
+
+    </select>
+
+
+    <select id="getOptionByAncestors" resultType="com.anyi.common.insurance.domain.DiOption">
+        SELECT
+        b.*
+        FROM
+        di_insurance_option a
+        left join di_option b on a.option_id = b.id
+        WHERE
+        a.insurance_id = #{insuranceId}
+        <if test="code != null and code != '' ">
+            and b.code  = #{code}
+        </if>
+        <if test="ancestors != null and ancestors != '' ">
+            and b.ancestors LIKE concat(#{ancestors}, '%')
+        </if>
+    </select>
+
+
+
+</mapper>

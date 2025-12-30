@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.sparrow.organize.employee.dao.mapper.ExtEmployeeLoginMapper">
+  <resultMap id="BaseResultMap" type="com.anyi.sparrow.organize.employee.domain.EmployeeLogin">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="device" jdbcType="VARCHAR" property="device" />
+    <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
+    <result column="token" jdbcType="VARCHAR" property="token" />
+    <result column="token_expire" jdbcType="TIMESTAMP" property="tokenExpire" />
+    <result column="os" jdbcType="VARCHAR" property="os" />
+    <result column="os_version" jdbcType="VARCHAR" property="osVersion" />
+    <result column="app_version" jdbcType="VARCHAR" property="appVersion" />
+  </resultMap>
+<!--  <select id="selectByCmpId" resultMap="BaseResultMap">-->
+<!--    select el.id, el.user_id, el.device, el.login_time, el.token, el.token_expire, el.os, el.os_version, el.app_version-->
+<!--    from employee_login el-->
+<!--    inner join employee e on el.user_id = e.id-->
+<!--    <where>-->
+<!--      e.company_id = ${cmpId} and e.status = 1-->
+<!--    </where>-->
+<!--  </select>-->
+<!--  <delete id="deleteByCmpId">-->
+<!--    delete from employee_login where user_id in (-->
+<!--	    select id from employee where company_id = #{cmpId} and status = 1-->
+<!--    )-->
+<!--  </delete>-->
+
+  <select id="selectByDeptCode" resultMap="BaseResultMap">
+    select el.id, el.user_id, el.device, el.login_time, el.token, el.token_expire, el.os, el.os_version, el.app_version
+    from employee_login el
+    inner join (select id, status from employee where dept_code = #{deptCode} or dept_code like concat(#{deptCode}, '-%')) e on el.user_id = e.id
+  </select>
+
+  <delete id="deleteByDeptCode">
+    delete from employee_login where user_id in (
+	    select id from employee where dept_code = #{deptCode} or dept_code like concat(#{deptCode}, '-%')
+    )
+  </delete>
+</mapper>

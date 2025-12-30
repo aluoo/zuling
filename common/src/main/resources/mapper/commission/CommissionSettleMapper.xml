@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.commission.mapper.CommissionSettleMapper">
+
+    <select id="personSettleStats" resultType="java.lang.Long">
+        SELECT IFNULL(SUM(settle_balance), 0)
+        from commission_settle
+        where employee_id = #{employeeId,jdbcType=BIGINT}
+          and commission_type = #{bizType,jdbcType=INTEGER}
+          and gain_type = #{gainType,jdbcType=INTEGER}
+          and settle_status = #{settleStatus,jdbcType=INTEGER}
+    </select>
+
+    <select id="queryPersonSettles" resultType="com.anyi.common.commission.dto.income.WaitSettlesDTO">
+        SELECT cs.settle_balance as balance,
+               cs.remark         as remark,
+               cs.gain_time
+        FROM commission_settle cs
+        WHERE cs.employee_id = #{employeeId,jdbcType=BIGINT}
+          AND cs.commission_type = #{bizType,jdbcType=INTEGER}
+          and cs.gain_type = #{gainType,jdbcType=INTEGER}
+          and cs.settle_status = #{settleStatus,jdbcType=INTEGER}
+          AND cs.settle_balance > 0
+        order by cs.gain_time desc, cs.id DESC
+    </select>
+    <select id="queryTeamSettles"
+            resultType="com.anyi.common.commission.dto.income.TeamWaitSettlesDetailDTO">
+        SELECT cb.balance,
+               cemp.`name`,
+               CASE cemp.type
+                   WHEN 1 THEN true
+                   WHEN 3 THEN true
+                   ELSE false END AS dept_flag,
+               dept.name          as dept_name,
+               cb.gain_time
+        FROM (SELECT cs.child_employee_id,
+                     SUM(cs.settle_balance) as balance,
+                     cs.gain_time
+              FROM commission_settle cs
+                       LEFT JOIN employee as emp on emp.id = cs.child_employee_id
+              WHERE cs.employee_id = #{employeeId,jdbcType=BIGINT}
+                AND cs.commission_type = #{bizType,jdbcType=INTEGER}
+                and cs.gain_type = #{gainType,jdbcType=INTEGER}
+                and cs.settle_status = #{settleStatus,jdbcType=INTEGER}
+                AND cs.settle_balance > 0
+              GROUP BY cs.child_employee_id) as cb
+                 LEFT JOIN employee as cemp on cemp.id = cb.child_employee_id
+                 LEFT JOIN dept on dept.id = cemp.dept_id
+        order by cb.balance DESC, cb.child_employee_id ASC
+    </select>
+
+    <select id="incomeStatisticsByDate" resultType="java.lang.Long">
+        select ifnull(sum(settle_balance), 0)
+        from commission_settle
+        <where>
+            and employee_id = #{employeeId,jdbcType=BIGINT}
+            and create_time <![CDATA[ >= ]]> #{beginTime}
+            and create_time <![CDATA[ <= ]]> #{endTime}
+            <if test="bizType != null">
+                and commission_type = #{bizType,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.product.mapper.OrderQuotePriceLogMapper">
+
+    <select id="countGroupByOrderIds"
+            resultType="com.anyi.common.product.domain.dto.OrderQuotePriceLogCountDTO">
+        select order_id, count(case when quoted = 1 and sub_status != 8 then id else null end) as num
+        from mb_order_quote_price_log
+        <where>
+            and deleted = 0
+            <if test="orderIds != null and orderIds.size() > 0">
+                and order_id in
+                <foreach collection="orderIds" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+            group by order_id
+        </where>
+    </select>
+
+    <select id="listQuoteInfoByOrderId" resultType="com.anyi.common.product.domain.dto.OrderQuoteInfoDTO">
+        select ql.id, ql.order_id, ql.company_id, c.`name` as companyName,
+        ql.employee_id, ql.quote_time, ql.quoted, ql.original_quote_price,
+        ql.final_price, ql.commission, ql.quote_time_spent, ql.quote_time_spent_real, ql.platform_subsidy_price,
+        ql.status, ql.sub_status,
+        e.`name` as employeeName, e.mobile_number as employeeMobile,
+        o.create_time as orderCreateTime
+        from mb_order_quote_price_log ql
+        left join company c on c.id = ql.company_id
+        left join employee e on e.id = ql.employee_id
+        left join mb_order o on o.id = ql.order_id
+        <where>
+            and ql.deleted = 0
+            <if test="req.orderId != null">
+                and ql.order_id = #{req.orderId}
+            </if>
+            <if test="req.id != null">
+                and ql.id = #{req.id}
+            </if>
+            <if test="req.recyclerCompanyId != null">
+                and ql.company_id = #{req.recyclerCompanyId}
+            </if>
+            order by ql.quoted desc, ql.final_price desc, ql.quote_time desc, ql.create_time desc
+        </where>
+    </select>
+
+    <select id="countQuoteLog" resultType="com.anyi.common.product.domain.response.RecyclerQuoteCountInfoVO">
+        select
+        ifnull(count(nullif(case when `status` = -1 then `status` = -1 end, 0)), 0) as canceledCount,
+        ifnull(count(nullif(case when `status` = 0 then `status` = 0 end, 0)), 0) as pendingQuoteCount,
+        ifnull(count(nullif(case when `status` = 1 then `status` = 1 end, 0)), 0) as quotingCount,
+        ifnull(count(nullif(case when `status` = 2 then `status` = 2 end, 0)), 0) as quotedCount
+        from mb_order_quote_price_log
+        <where>
+            and deleted = 0 and company_id = #{recyclerCompanyId}
+            <if test="recyclerEmployeeId != null">
+                and employee_id = #{recyclerEmployeeId}
+            </if>
+        </where>
+    </select>
+</mapper>

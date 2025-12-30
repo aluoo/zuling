@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.employee.mapper.EmployeeMapper">
+  <resultMap id="BaseResultMap" type="com.anyi.common.employee.domain.Employee">
+    <id column="id" jdbcType="BIGINT" property="id"/>
+    <result column="company_id" jdbcType="BIGINT" property="companyId"/>
+    <result column="company_type" jdbcType="INTEGER" property="companyType"/>
+    <result column="dept_id" jdbcType="BIGINT" property="deptId"/>
+    <result column="dept_type" jdbcType="INTEGER" property="deptType"/>
+    <result column="type" jdbcType="INTEGER" property="type"/>
+    <result column="name" jdbcType="VARCHAR" property="name"/>
+    <result column="dept_code" jdbcType="VARCHAR" property="deptCode"/>
+    <result column="status" jdbcType="TINYINT" property="status"/>
+    <result column="province" jdbcType="VARCHAR" property="province"/>
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="mobile_number" jdbcType="VARCHAR" property="mobileNumber" />
+    <result column="head_url" jdbcType="VARCHAR" property="headUrl" />
+    <result column="withdraw_pwd" jdbcType="VARCHAR" property="withdrawPwd" />
+    <result column="ancestors" jdbcType="VARCHAR" property="ancestors" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="is_leaf" jdbcType="BOOLEAN" property="isLeaf" />
+    <result column="public_flag" jdbcType="BOOLEAN" property="publicFlag" />
+    <result column="creator" jdbcType="VARCHAR" property="creator" />
+    <result column="updator" jdbcType="VARCHAR" property="updator" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, company_id, company_type, dept_id, dept_type, type, name, dept_code, status, 
+    province, city, mobile_number, head_url,withdraw_pwd,ancestors,level,is_leaf,public_flag, creator, updator, create_time, update_time,password
+  </sql>
+  <select id="selectByExample" parameterType="com.anyi.common.employee.domain.EmployeeExample"
+          resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List"/>
+    from employee
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from employee
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from employee
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.anyi.common.employee.domain.EmployeeExample">
+    delete from employee
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.anyi.common.employee.domain.Employee">
+    insert into employee (id, company_id, company_type,
+                          dept_id, dept_type, type,
+                          name, dept_code, status,
+                          province, city, mobile_number,
+                          head_url, creator, updator,
+                          withdraw_pwd, ancestors, level, is_leaf,
+                          create_time, update_time, password)
+    values (#{id,jdbcType=BIGINT}, #{companyId,jdbcType=BIGINT}, #{companyType,jdbcType=INTEGER},
+            #{deptId,jdbcType=BIGINT}, #{deptType,jdbcType=INTEGER}, #{type,jdbcType=INTEGER},
+            #{name,jdbcType=VARCHAR}, #{deptCode,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT},
+      #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{mobileNumber,jdbcType=VARCHAR}, 
+      #{headUrl,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{updator,jdbcType=VARCHAR}, 
+      #{withdrawPwd,jdbcType=VARCHAR}, #{ancestors,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, #{isLeaf,jdbcType=BOOLEAN},
+            #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{password, jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.anyi.common.employee.domain.Employee">
+    insert into employee
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="companyType != null">
+        company_type,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="deptType != null">
+        dept_type,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="deptCode != null">
+        dept_code,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="mobileNumber != null">
+        mobile_number,
+      </if>
+      <if test="headUrl != null">
+        head_url,
+      </if>
+      <if test="creator != null">
+        creator,
+      </if>
+      <if test="updator != null">
+        updator,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="companyType != null">
+        #{companyType,jdbcType=INTEGER},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="deptType != null">
+        #{deptType,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="deptCode != null">
+        #{deptCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="mobileNumber != null">
+        #{mobileNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="headUrl != null">
+        #{headUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null">
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updator != null">
+        #{updator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.anyi.common.employee.domain.EmployeeExample"
+          resultType="java.lang.Long">
+    select count(*) from employee
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update employee
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.companyId != null">
+        company_id = #{record.companyId,jdbcType=BIGINT},
+      </if>
+      <if test="record.companyType != null">
+        company_type = #{record.companyType,jdbcType=INTEGER},
+      </if>
+      <if test="record.deptId != null">
+        dept_id = #{record.deptId,jdbcType=BIGINT},
+      </if>
+      <if test="record.deptType != null">
+        dept_type = #{record.deptType,jdbcType=INTEGER},
+      </if>
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deptCode != null">
+        dept_code = #{record.deptCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.province != null">
+        province = #{record.province,jdbcType=VARCHAR},
+      </if>
+      <if test="record.city != null">
+        city = #{record.city,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mobileNumber != null">
+        mobile_number = #{record.mobileNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.headUrl != null">
+        head_url = #{record.headUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.creator != null">
+        creator = #{record.creator,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updator != null">
+        updator = #{record.updator,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.password != null">
+        password = #{record.password,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update employee
+    set id = #{record.id,jdbcType=BIGINT},
+      company_id = #{record.companyId,jdbcType=BIGINT},
+      company_type = #{record.companyType,jdbcType=INTEGER},
+      dept_id = #{record.deptId,jdbcType=BIGINT},
+      dept_type = #{record.deptType,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      dept_code = #{record.deptCode,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=TINYINT},
+      province = #{record.province,jdbcType=VARCHAR},
+      city = #{record.city,jdbcType=VARCHAR},
+      mobile_number = #{record.mobileNumber,jdbcType=VARCHAR},
+      head_url = #{record.headUrl,jdbcType=VARCHAR},
+      creator = #{record.creator,jdbcType=VARCHAR},
+      updator = #{record.updator,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      password = #{record.password,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.anyi.common.employee.domain.Employee">
+    update employee
+    <set>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=BIGINT},
+      </if>
+      <if test="companyType != null">
+        company_type = #{companyType,jdbcType=INTEGER},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=BIGINT},
+      </if>
+      <if test="deptType != null">
+        dept_type = #{deptType,jdbcType=INTEGER},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="deptCode != null">
+        dept_code = #{deptCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="mobileNumber != null">
+        mobile_number = #{mobileNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="headUrl != null">
+        head_url = #{headUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null">
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="updator != null">
+        updator = #{updator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.anyi.common.employee.domain.Employee">
+    update employee
+    set company_id   = #{companyId,jdbcType=BIGINT},
+        company_type = #{companyType,jdbcType=INTEGER},
+        dept_id      = #{deptId,jdbcType=BIGINT},
+        dept_type    = #{deptType,jdbcType=INTEGER},
+        type         = #{type,jdbcType=INTEGER},
+        name         = #{name,jdbcType=VARCHAR},
+        dept_code    = #{deptCode,jdbcType=VARCHAR},
+        status       = #{status,jdbcType=TINYINT},
+        province     = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      mobile_number = #{mobileNumber,jdbcType=VARCHAR},
+      head_url = #{headUrl,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      updator = #{updator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      password = #{password,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateIsLeaf">
+    update employee set  is_leaf = #{isLeaf,jdbcType=BOOLEAN},update_time = now()  where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByExampleWithRowbounds" parameterType="com.anyi.common.employee.domain.EmployeeExample"
+          resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List"/>
+    from employee
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause"/>
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+    <select id="selectInvoiceAbleLevel" resultType="java.lang.Integer">
+      SELECT ee.level
+      from employee ee
+             INNER JOIN company c on ee.company_id = c.id
+      where ee.company_type = 2
+        and c.invoice_able = 1
+        and ee.id in
+      <foreach collection="employees" open="(" close=")" separator="," item="item" >
+        #{item.id,jdbcType=BIGINT}
+      </foreach>
+      ORDER BY ee.`level` ASC LIMIT 1
+    </select>
+
+  <select id="selectBdByAncestors"  resultMap="BaseResultMap">
+    select d.*
+    from (select e.*
+          from employee e
+          where e.level = 1
+            and e.type = 3) d
+    where  <![CDATA[Locate(d.ancestors, #{ancestors}) > 0
+    ]]>
+  </select>
+
+  <select id="selectChildrenByAncestors" resultType="com.anyi.common.employee.domain.Employee">
+    select *
+    from employee
+    where `status` = 1
+      and ancestors like concat('%', #{targetId}, '%')
+      and dept_code like concat('%', #{targetDeptCode}, '%')
+  </select>
+
+
+  <select id="getByDeptCode" resultType="com.anyi.common.employee.vo.AgencyCalVO">
+    select count(if(company_type = '1', true, null))                              as staffNum,
+           count(if(company_type in (2,3) and dept_type = 1 and type = 1, true, null)) as companyNum
+    from employee
+    where `status` = 1
+      and ancestors like concat(#{ancestors}, ',%')
+  </select>
+
+</mapper>

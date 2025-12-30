@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.insurance.mapper.DiProductInsurancePriceMapper">
+
+    <select id="getInfoByPriceInterval"
+            resultType="com.anyi.common.insurance.domain.dto.DiProductInsurancePriceDTO">
+        select * from di_product_insurance_price
+        <where>
+            and `status` = 1
+            <if test="req.insuranceId != null">
+                and insurance_id = #{req.insuranceId}
+            </if>
+            <if test="req.queryPrice != null">
+                and #{req.queryPrice} <![CDATA[>= ]]> price_low
+                and #{req.queryPrice} <![CDATA[< ]]> price_high
+            </if>
+        </where>
+    </select>
+</mapper>

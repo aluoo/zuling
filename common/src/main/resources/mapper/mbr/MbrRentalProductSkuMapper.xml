@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.mbr.mapper.MbrRentalProductSkuMapper">
+
+    <select id="listProduct" resultType="com.anyi.common.mbr.response.MbrProductDTO">
+        select a.id as skuId,p.*, b.name as brandName, b.logo as brandLogo
+        from mbr_rental_product_sku a
+        left join mb_product p on a.product_id = p.id
+        left join mb_brand b on a.brand_id = b.id
+        <where>
+        <if test="skuIds != null and skuIds.size() > 0">
+            and a.id in
+            <foreach collection="skuIds" item="skuId" open="(" separator="," close=")">
+                #{skuId}
+            </foreach>
+        </if>
+        </where>
+    </select>
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anyi.common.company.mapper.ExtCompanyMapper">
+    <update id="deleteChannel">
+        UPDATE company
+        SET status      = #{company.status},
+            update_time = #{company.updateTime},
+            updator     = #{company.updator}
+        where status = 2
+          AND (code = #{code} OR code LIKE concat(#{code}, '-%'))
+    </update>
+
+    <select id="selectMaxCode" resultType="java.lang.Integer">
+        SELECT MAX(d.num)
+        FROM (SELECT CONVERT(SUBSTRING_INDEX(code, "-", -1), SIGNED) num FROM company WHERE p_id = #{pId}) d
+    </select>
+
+    <update id="updatePdept">
+        UPDATE company SET p_dept_id = #{pDeptId} where id in
+        <foreach collection="cmpIds" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>
